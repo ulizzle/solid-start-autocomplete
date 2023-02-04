@@ -27,7 +27,9 @@ const AutoComplete = (props: { results: ToDo[] }) => {
         <ul class="mx-auto max-w-xl">
           {filteredResults() &&
             filteredResults().map((result: ToDo) => () => (
-              <li class={styles.resultsListItem}>{result.title}</li>
+              <li class={styles.resultsListItem}>
+                {result.id} {result.title}
+              </li>
             ))}
         </ul>
       )}
