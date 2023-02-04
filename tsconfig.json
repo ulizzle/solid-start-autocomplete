@@ -10,6 +10,8 @@
     "strict": true,
     "types": ["solid-start/env"],
     "baseUrl": "./",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     "paths": {
       "~/*": ["./src/*"]
     }
