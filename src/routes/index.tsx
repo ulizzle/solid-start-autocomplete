@@ -1,18 +1,12 @@
 import { AutoComplete } from "../components";
 import { useRouteData, createRouteData } from "solid-start";
+import { ToDo } from "../types";
 
 export function routeData() {
   return createRouteData(async () => {
     const response = await fetch("https://jsonplaceholder.typicode.com/todos");
     return (await response.json()) as ToDo[];
   });
-}
-
-export interface ToDo {
-  title: string;
-  completed: boolean;
-  id: number;
-  userId: number;
 }
 
 export default function Home() {

@@ -1,6 +1,7 @@
-import { createEffect, createSignal } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
 import styles from "./styles";
-import { ToDo } from "../../routes/index";
+import { A } from "solid-start";
+import { ToDo } from "../../types";
 
 const AutoComplete = (props: { results: ToDo[] }) => {
   const [query, setQuery] = createSignal("");
@@ -23,16 +24,15 @@ const AutoComplete = (props: { results: ToDo[] }) => {
           setQuery(value);
         }}
       />
-      {query() && (
+      <Show when={query() && filteredResults.length === 0}>
         <ul class="mx-auto max-w-xl">
-          {filteredResults() &&
-            filteredResults().map((result: ToDo) => () => (
-              <li class={styles.resultsListItem}>
-                {result.id} {result.title}
-              </li>
-            ))}
+          {filteredResults().map((result: ToDo) => () => (
+            <li class={styles.resultsListItem}>
+              <A href={`/todos/${result.id}`}>{result.title}</A>
+            </li>
+          ))}
         </ul>
-      )}
+      </Show>
     </div>
   );
 };
