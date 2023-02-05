@@ -1,31 +1,28 @@
-import { useRouteData, useParams } from "solid-start";
+import { createRouteData, useRouteData, RouteDataArgs } from "solid-start";
 import { ToDo } from "../../types";
+import { Footer } from "../../components";
+
+export function routeData({ params }: RouteDataArgs) {
+  return createRouteData(async () => {
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/todos/${params?.id}`
+    );
+    return (await response.json()) as ToDo;
+  });
+}
 
 export default function TodoRoute() {
+  const todo = useRouteData<typeof routeData>();
+  if (!todo()) return null;
   return (
     <main class="text-center mx-auto text-gray-700 p-4">
       <h1 class="max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
-        Todo
+        Todo: {todo()?.id}
       </h1>
-      <p>This should be a Todo Item with the right ID</p>
-      <p class="mt-8">
-        Visit{" "}
-        <a
-          href="https://solidjs.com"
-          target="_blank"
-          class="text-sky-600 hover:underline"
-        >
-          solidjs.com
-        </a>{" "}
-        to learn how to build Solid apps.
-      </p>
-      <p class="my-4">
-        <a href="/" class="text-sky-600 hover:underline">
-          Home
-        </a>
-        {" - "}
-        <span>Todo Page</span>
-      </p>
+      <section>
+        <h3>{todo()?.title}</h3>
+      </section>
+      <Footer />
     </main>
   );
 }

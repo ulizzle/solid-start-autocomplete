@@ -1,4 +1,4 @@
-import { AutoComplete } from "../components";
+import { AutoComplete, Footer } from "../components";
 import { useRouteData, createRouteData } from "solid-start";
 import { ToDo } from "../types";
 
@@ -18,24 +18,7 @@ export default function Home() {
         Hello AutoComplete!
       </h1>
       <AutoComplete results={todos()} />
-      <p class="mt-8">
-        Visit{" "}
-        <a
-          href="https://solidjs.com"
-          target="_blank"
-          class="text-sky-600 hover:underline"
-        >
-          solidjs.com
-        </a>{" "}
-        to learn how to build Solid apps.
-      </p>
-      <p class="my-4">
-        <span>Home</span>
-        {" - "}
-        <a href="/about" class="text-sky-600 hover:underline">
-          About Page
-        </a>{" "}
-      </p>
+      <Footer />
     </main>
   );
 }
