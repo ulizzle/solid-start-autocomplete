@@ -1,13 +1,17 @@
 import { Show, createEffect, createSignal } from "solid-js";
 import styles from "./styles";
-import { A } from "solid-start";
 import { ToDo } from "../../types";
+import { useNavigate } from "solid-start";
 
 const AutoComplete = (props: { results: ToDo[] }) => {
   const [query, setQuery] = createSignal("");
   const [filteredResults, setFilteredResults] = createSignal<ToDo[]>([]);
   const { results } = props;
+  const [result, setResult] = createSignal<ToDo | undefined>(undefined);
+  const [didSelectResult, setDidSelectResult] = createSignal(false);
+  const [didSubmit, setDidSubmit] = createSignal(false);
 
+  // Filter the results based on the query
   createEffect(() => {
     if (!results) return;
     setFilteredResults(
@@ -17,18 +21,36 @@ const AutoComplete = (props: { results: ToDo[] }) => {
     );
   });
 
+  // Navigate to the selected result
+  const navigate = useNavigate();
+  createEffect(() => {
+    if (didSubmit() && result()) {
+      navigate(`/todos/${result().id}`);
+    }
+  });
+
   return (
     <div id="AutoComplete">
       <AutoCompleteSearchForm
         onSearch={(value) => {
           setQuery(value);
         }}
+        result={result}
+        onSubmit={(result) => setDidSubmit(!didSubmit())}
       />
-      <Show when={query() && filteredResults.length === 0}>
+      <Show
+        when={query() && filteredResults.length === 0 && !didSelectResult()}
+      >
         <ul class="mx-auto max-w-xl">
           {filteredResults().map((result: ToDo) => () => (
-            <li class={styles.resultsListItem}>
-              <A href={`/todos/${result.id}`}>{result.title}</A>
+            <li
+              class={styles.resultsListItem}
+              onClick={() => {
+                setResult(result);
+                setDidSelectResult(!didSelectResult());
+              }}
+            >
+              {result.title}
             </li>
           ))}
         </ul>
@@ -39,7 +61,7 @@ const AutoComplete = (props: { results: ToDo[] }) => {
 
 const AutoCompleteSearchForm = (props: AutoCompleteSearchFormProps) => {
   const [searchTerm, setSearchTerm] = createSignal("");
-  const { onSearch } = props;
+  const { onSearch, result, onSubmit } = props;
   createEffect(() => {
     onSearch(searchTerm());
   });
@@ -50,10 +72,17 @@ const AutoCompleteSearchForm = (props: AutoCompleteSearchFormProps) => {
         <input
           type="text"
           onInput={(e) => setSearchTerm(e.currentTarget.value)}
-          value={searchTerm()}
+          value={result()?.title || searchTerm()}
           class={styles.input}
         />
-        <button type="submit" class={styles.submitBtn}>
+        <button
+          type="submit"
+          class={styles.submitBtn}
+          onClick={(e) => {
+            e.preventDefault();
+            onSubmit();
+          }}
+        >
           Submit
         </button>
       </div>
@@ -62,7 +91,9 @@ const AutoCompleteSearchForm = (props: AutoCompleteSearchFormProps) => {
 };
 
 interface AutoCompleteSearchFormProps {
+  result?: ToDo;
   onSearch: (searchTerm: string) => void;
+  onSubmit: (result: ToDo) => void;
 }
 
 interface AutoCompleteResultsProps {
