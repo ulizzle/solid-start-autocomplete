@@ -1,5 +1,7 @@
 # SolidStart - AutoComplete
 
+https://github.com/ulizzle/solid-start-autocomplete/assets/109386966/85db5eff-7c8f-4b99-82b0-790e95219dd8
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
